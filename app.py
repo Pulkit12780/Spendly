@@ -1,7 +1,9 @@
-from flask import Flask, render_template
-from database.db import init_db, seed_db
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from database.db import init_db, seed_db, create_user
 
 app = Flask(__name__)
+app.secret_key = "spendly-dev-secret"  # use env var in production
 
 
 # ------------------------------------------------------------------ #
@@ -15,7 +17,35 @@ def landing():
 
 @app.route("/register")
 def register():
+    if session.get("user_id"):
+        return redirect(url_for("landing"))
     return render_template("register.html")
+
+
+@app.route("/register", methods=["POST"])
+def register_post():
+    username = request.form.get("username", "").strip()
+    email    = request.form.get("email", "").strip()
+    password = request.form.get("password", "")
+    confirm  = request.form.get("confirm_password", "")
+
+    if not username or not email or not password:
+        flash("All fields are required.")
+        return redirect(url_for("register"))
+
+    if password != confirm:
+        flash("Passwords do not match.")
+        return redirect(url_for("register"))
+
+    try:
+        user_id = create_user(username, email, password)
+    except sqlite3.IntegrityError:
+        flash("An account with that email already exists.")
+        return redirect(url_for("register"))
+
+    session["user_id"]  = user_id
+    session["username"] = username
+    return redirect(url_for("landing"))
 
 
 @app.route("/login")
