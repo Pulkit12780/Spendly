@@ -99,3 +99,27 @@ def seed_db():
 
     conn.commit()
     conn.close()
+
+
+def create_user(username, email, password):
+    from werkzeug.security import generate_password_hash
+    password_hash = generate_password_hash(password, method="pbkdf2:sha256")
+    conn = get_db()
+    cursor = conn.execute(
+        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+        (username, email, password_hash),
+    )
+    conn.commit()
+    user_id = cursor.lastrowid
+    conn.close()
+    return user_id
+
+
+def get_user_by_email(email):
+    conn = get_db()
+    user = conn.execute(
+        "SELECT * FROM users WHERE email = ?",
+        (email,),
+    ).fetchone()
+    conn.close()
+    return user
