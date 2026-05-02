@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spendly Test Writer Agent</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3250;
+    --red: #ff4d6d;
+    --red-soft: #ff4d6d22;
+    --green: #4ade80;
+    --green-soft: #4ade8022;
+    --blue: #60a5fa;
+    --blue-soft: #60a5fa22;
+    --yellow: #fbbf24;
+    --yellow-soft: #fbbf2422;
+    --purple: #a78bfa;
+    --purple-soft: #a78bfa22;
+    --cyan: #22d3ee;
+    --cyan-soft: #22d3ee22;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 56px 24px 48px;
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 60%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #ff4d6d18 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red-soft);
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--red); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto 28px;
+    line-height: 1.65;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 720px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .icon-red    { background: var(--red-soft);    color: var(--red); }
+  .icon-green  { background: var(--green-soft);  color: var(--green); }
+  .icon-blue   { background: var(--blue-soft);   color: var(--blue); }
+  .icon-yellow { background: var(--yellow-soft); color: var(--yellow); }
+  .icon-purple { background: var(--purple-soft); color: var(--purple); }
+  .icon-cyan   { background: var(--cyan-soft);   color: var(--cyan); }
+
+  .card-header h2 {
+    font-size: .95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-muted);
+  }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--blue-soft);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body strong { display: block; font-size: .9rem; font-weight: 600; margin-bottom: 4px; }
+  .step-body p { font-size: .82rem; color: var(--text-muted); line-height: 1.55; }
+
+  /* ── Check list ── */
+  .checklist { display: flex; flex-direction: column; gap: 10px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: .85rem; line-height: 1.5; color: var(--text-muted);
+  }
+  .check-item .chk { color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── Never list ── */
+  .never-list { display: flex; flex-direction: column; gap: 10px; }
+  .never-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: .85rem; line-height: 1.5; color: var(--text-muted);
+  }
+  .never-item .x { color: var(--red); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── Tags ── */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 11px;
+    font-size: .78rem;
+    font-family: 'Fira Code', monospace;
+    color: var(--text-muted);
+  }
+  .tag.green { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+  .tag.blue  { background: var(--blue-soft);  border-color: var(--blue);  color: var(--blue); }
+  .tag.red   { background: var(--red-soft);   border-color: var(--red);   color: var(--red); }
+  .tag.yellow{ background: var(--yellow-soft);border-color: var(--yellow);color: var(--yellow); }
+  .tag.purple{ background: var(--purple-soft);border-color: var(--purple);color: var(--purple); }
+
+  /* ── Route table ── */
+  .route-table { width: 100%; border-collapse: collapse; }
+  .route-table th {
+    text-align: left;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .route-table td {
+    padding: 10px 12px;
+    font-size: .85rem;
+    border-bottom: 1px solid var(--surface2);
+    vertical-align: middle;
+  }
+  .route-table tr:last-child td { border-bottom: none; }
+  .route-table td:first-child {
+    font-family: 'Fira Code', monospace;
+    color: var(--blue);
+  }
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: .8rem;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot-gray  { background: #475569; }
+
+  /* ── Code snippet ── */
+  .code-block {
+    background: #0d0f18;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    font-family: 'Fira Code', monospace;
+    font-size: .78rem;
+    line-height: 1.7;
+    color: #94a3b8;
+  }
+  .code-block .kw  { color: #c084fc; }
+  .code-block .fn  { color: #60a5fa; }
+  .code-block .str { color: #4ade80; }
+  .code-block .cm  { color: #475569; }
+  .code-block .dec { color: #fbbf24; }
+
+  /* ── Mandate card ── */
+  .mandate {
+    background: linear-gradient(135deg, #1a1d27, #0f1117);
+    border: 1px solid var(--purple);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mandate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 0% 50%, #a78bfa14 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .mandate h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+  .mandate p { color: var(--text-muted); font-size: .9rem; line-height: 1.65; margin-bottom: 16px; }
+  .mandate-points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .mandate-point {
+    background: var(--purple-soft);
+    border: 1px solid #a78bfa44;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: .83rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .mandate-point strong { display: block; color: var(--purple); margin-bottom: 4px; font-size: .82rem; }
+
+  /* ── Categories ── */
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .cat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .cat-icon { font-size: 22px; margin-bottom: 8px; }
+  .cat-label { font-size: .8rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .cat-desc { font-size: .73rem; color: var(--text-muted); line-height: 1.45; }
+
+  /* ── Output format ── */
+  .output-steps { display: flex; gap: 0; }
+  .output-step {
+    flex: 1;
+    text-align: center;
+    padding: 18px 12px;
+    background: var(--surface2);
+    position: relative;
+  }
+  .output-step:first-child { border-radius: 12px 0 0 12px; border: 1px solid var(--border); }
+  .output-step:not(:first-child) { border: 1px solid var(--border); border-left: none; }
+  .output-step:last-child { border-radius: 0 12px 12px 0; }
+  .output-step .num { font-size: 1.6rem; font-weight: 800; color: var(--cyan); }
+  .output-step .label { font-size: .78rem; font-weight: 600; color: var(--text); margin-top: 4px; }
+  .output-step .sub { font-size: .72rem; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+  @media (max-width: 560px) {
+    .output-steps { flex-direction: column; }
+    .output-step:first-child { border-radius: 12px 12px 0 0; }
+    .output-step:not(:first-child) { border: 1px solid var(--border); border-top: none; }
+    .output-step:last-child { border-radius: 0 0 12px 12px; }
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+    color: var(--text-dim);
+  }
+  .footer span { color: var(--red); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="badge">&#9679; Claude Agent</div>
+    <h1>Spendly <span>Test Writer</span></h1>
+    <p>An automated QA agent that generates specification-driven pytest test suites for Spendly routes — invoked automatically after every feature implementation.</p>
+    <div class="hero-pills">
+      <span class="pill">pytest</span>
+      <span class="pill">Flask test_client()</span>
+      <span class="pill">SQLite :memory:</span>
+      <span class="pill">spec-driven</span>
+      <span class="pill">model: sonnet</span>
+      <span class="pill">color: red</span>
+    </div>
+  </div>
+
+  <!-- Core Mandate -->
+  <div class="mandate">
+    <h2>&#10024; Core Mandate: Spec-Driven Testing</h2>
+    <p>Tests are written based on <strong>what the feature is supposed to do</strong> — its specification and user stories — never by reading the implementation code and mirroring it.</p>
+    <div class="mandate-points">
+      <div class="mandate-point">
+        <strong>Observable Outcomes Only</strong>
+        Test inputs, outputs, HTTP responses, redirects, session state, DB side-effects — all from the outside in.
+      </div>
+      <div class="mandate-point">
+        <strong>No Logic Mirroring</strong>
+        If the route does X, don't test that X is called. Test that the observable outcome matches the spec.
+      </div>
+      <div class="mandate-point">
+        <strong>Ask First</strong>
+        If the feature spec is ambiguous, ask clarifying questions before writing a single test.
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Writing Process + Test Categories -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-blue">&#9654;</div>
+        <h2>Test Writing Process</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Identify the Feature Spec</strong>
+            <p>Extract what the feature must do from the task description, route table, or user story.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Determine Test Categories</strong>
+            <p>Map out happy path, validation failures, auth/authz, DB side effects, HTTP semantics, and edge cases.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Write the Tests</strong>
+            <p>Follow the pytest standards below: fixtures, naming conventions, and assertion patterns.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Self-Review Checklist</strong>
+            <p>Verify naming, isolation, no hardcoded URLs, observable-only assertions before finalizing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-yellow">&#9733;</div>
+        <h2>Test Categories</h2>
+      </div>
+      <div class="cat-grid">
+        <div class="cat">
+          <div class="cat-icon">&#10003;</div>
+          <div class="cat-label">Happy Path</div>
+          <div class="cat-desc">Valid input → expected success outcome</div>
+        </div>
+        <div class="cat">
+          <div class="cat-icon">&#9888;</div>
+          <div class="cat-label">Validation Failures</div>
+          <div class="cat-desc">Missing/invalid input → correct error behavior</div>
+        </div>
+        <div class="cat">
+          <div class="cat-icon">&#128274;</div>
+          <div class="cat-label">Auth / Authz</div>
+          <div class="cat-desc">Protected routes redirect if unauthenticated</div>
+        </div>
+        <div class="cat">
+          <div class="cat-icon">&#128451;</div>
+          <div class="cat-label">DB Side Effects</div>
+          <div class="cat-desc">Data correctly inserted / updated / deleted</div>
+        </div>
+        <div class="cat">
+          <div class="cat-icon">&#127760;</div>
+          <div class="cat-label">HTTP Semantics</div>
+          <div class="cat-desc">Correct status codes, redirects, body content</div>
+        </div>
+        <div class="cat">
+          <div class="cat-icon">&#9881;</div>
+          <div class="cat-label">Edge Cases</div>
+          <div class="cat-desc">Empty fields, duplicates, boundary values</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pytest Standards -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-green">&#128203;</div>
+        <h2>Pytest Standards</h2>
+      </div>
+      <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px;">File: <code style="color:var(--green);font-family:'Fira Code',monospace">tests/test_&lt;feature&gt;.py</code></p>
+      <div class="code-block">
+        <pre><span class="kw">import</span> pytest
+<span class="kw">from</span> app <span class="kw">import</span> app
+<span class="kw">from</span> database.db <span class="kw">import</span> init_db
+
+<span class="dec">@pytest.fixture</span>
+<span class="kw">def</span> <span class="fn">client</span>():
+    app.config[<span class="str">'TESTING'</span>] = <span class="kw">True</span>
+    app.config[<span class="str">'DATABASE'</span>] = <span class="str">':memory:'</span>
+    app.config[<span class="str">'SECRET_KEY'</span>] = <span class="str">'test-secret'</span>
+    <span class="kw">with</span> app.test_client() <span class="kw">as</span> client:
+        <span class="kw">with</span> app.app_context():
+            <span class="fn">init_db</span>()
+        <span class="kw">yield</span> client</pre>
+      </div>
+      <div style="margin-top:16px">
+        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Naming Convention</p>
+        <div class="tag-list">
+          <span class="tag blue">test_login_valid_credentials_redirects</span>
+          <span class="tag blue">test_login_wrong_password_shows_error</span>
+          <span class="tag blue">test_add_expense_missing_amount_400</span>
+          <span class="tag blue">test_logout_clears_session</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-cyan">&#128269;</div>
+        <h2>Required Assertions</h2>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">HTTP status code</strong> — <code style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--cyan)">assert response.status_code == 200</code></span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">Redirect target</strong> — <code style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--cyan)">response.headers['Location']</code></span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">Response body</strong> — <code style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--cyan)">assert b'text' in response.data</code></span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">DB state</strong> — query test DB directly to verify rows changed</span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">Session state</strong> — <code style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--cyan)">client.session_transaction()</code></span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">Isolation</strong> — fresh DB per test, no state leakage</span>
+        </div>
+        <div class="check-item">
+          <span class="chk">&#10003;</span>
+          <span><strong style="color:var(--text)">No hardcoded URLs</strong> — use route path strings matching <code style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--cyan)">app.py</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route Status + Never Do -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-yellow">&#128358;</div>
+        <h2>Route Status</h2>
+      </div>
+      <table class="route-table">
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GET /</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Implemented</span></td>
+          </tr>
+          <tr>
+            <td>GET /register</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Implemented</span></td>
+          </tr>
+          <tr>
+            <td>GET /login</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Implemented</span></td>
+          </tr>
+          <tr>
+            <td>GET /logout</td>
+            <td><span class="status-dot"><span class="dot dot-gray"></span>Stub — Step 3</span></td>
+          </tr>
+          <tr>
+            <td>GET /profile</td>
+            <td><span class="status-dot"><span class="dot dot-gray"></span>Stub — Step 4</span></td>
+          </tr>
+          <tr>
+            <td>GET /expenses/add</td>
+            <td><span class="status-dot"><span class="dot dot-gray"></span>Stub — Step 7</span></td>
+          </tr>
+          <tr>
+            <td>GET /expenses/&lt;id&gt;/edit</td>
+            <td><span class="status-dot"><span class="dot dot-gray"></span>Stub — Step 8</span></td>
+          </tr>
+          <tr>
+            <td>GET /expenses/&lt;id&gt;/delete</td>
+            <td><span class="status-dot"><span class="dot dot-gray"></span>Stub — Step 9</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:.75rem;color:var(--red);margin-top:14px;">Only write tests for implemented routes. If asked to test a stub, confirm implementation first.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-red">&#9888;</div>
+        <h2>Never Do</h2>
+      </div>
+      <div class="never-list">
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Read <code style="font-family:'Fira Code',monospace;font-size:.8rem">app.py</code> to understand route logic and mirror it in tests</span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Write tests for stub routes unless confirmed implemented</span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Hardcode database file paths — use <code style="font-family:'Fira Code',monospace;font-size:.8rem">:memory:</code> or <code style="font-family:'Fira Code',monospace;font-size:.8rem">tmp_path</code></span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Use <code style="font-family:'Fira Code',monospace;font-size:.8rem">requests</code> or real HTTP — always use Flask's <code style="font-family:'Fira Code',monospace;font-size:.8rem">test_client()</code></span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Install new packages — only what's in <code style="font-family:'Fira Code',monospace;font-size:.8rem">requirements.txt</code></span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Write vacuous tests — no <code style="font-family:'Fira Code',monospace;font-size:.8rem">assert True</code></span>
+        </div>
+        <div class="never-item">
+          <span class="x">&#10007;</span>
+          <span>Skip negative/edge case tests — they matter as much as happy path</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Output Format -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <div class="icon icon-purple">&#128196;</div>
+      <h2>Output Format — Always Deliver These 3</h2>
+    </div>
+    <div class="output-steps">
+      <div class="output-step">
+        <div class="num">1</div>
+        <div class="label">Full Test File</div>
+        <div class="sub">All imports, fixtures, and test functions — complete, runnable file</div>
+      </div>
+      <div class="output-step">
+        <div class="num">2</div>
+        <div class="label">Summary Table</div>
+        <div class="sub">Each test name + the behavior it validates</div>
+      </div>
+      <div class="output-step">
+        <div class="num">3</div>
+        <div class="label">Run Command</div>
+        <div class="sub"><code style="font-family:'Fira Code',monospace;font-size:.75rem">pytest tests/test_&lt;feature&gt;.py</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- When Triggered -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <div class="icon icon-green">&#9889;</div>
+      <h2>Auto-Trigger Scenarios</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px">
+        <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:8px">&#128274; POST /login implemented</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">User implements login with session handling → agent writes tests for valid credentials, wrong password, missing fields, session state.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px">
+        <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:8px">&#128181; GET+POST /expenses/add implemented</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Expense add route goes live → agent writes tests for form render, valid submission, validation errors, DB insertion.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px">
+        <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:8px">&#128682; GET /logout implemented</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Logout clears session and redirects → agent writes tests for session clearing and redirect target.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack pills -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon icon-cyan">&#128736;</div>
+      <h2>Spendly Project Context</h2>
+    </div>
+    <div class="tag-list">
+      <span class="tag green">Flask only</span>
+      <span class="tag green">SQLite + PRAGMA FK=ON</span>
+      <span class="tag green">Python 3.10+</span>
+      <span class="tag blue">app.py (all routes)</span>
+      <span class="tag blue">database/db.py</span>
+      <span class="tag blue">templates/base.html</span>
+      <span class="tag yellow">port 5001</span>
+      <span class="tag yellow">vanilla JS only</span>
+      <span class="tag yellow">no new pip packages</span>
+      <span class="tag red">no blueprints</span>
+      <span class="tag red">no ORM</span>
+      <span class="tag red">no React/jQuery</span>
+      <span class="tag purple">url_for() always</span>
+      <span class="tag purple">parameterized queries</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    Spendly Test Writer Agent &mdash; auto-invoked after every feature implementation &mdash; powered by <span>Claude Sonnet</span>
+  </div>
+
+</div>
+</body>
+</html>

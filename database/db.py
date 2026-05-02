@@ -123,3 +123,59 @@ def get_user_by_email(email):
     ).fetchone()
     conn.close()
     return user
+
+
+def get_user_by_id(user_id):
+    conn = get_db()
+    user = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+    conn.close()
+    return user
+
+
+def get_expense_stats(user_id):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT COUNT(*) AS total_count, COALESCE(SUM(amount), 0.0) AS total_amount "
+        "FROM expenses WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    conn.close()
+    return {"total_count": row["total_count"], "total_amount": row["total_amount"]}
+
+
+def get_expense_stats_filtered(user_id, from_date, to_date):
+    sql = (
+        "SELECT COUNT(*) AS total_count, COALESCE(SUM(amount), 0.0) AS total_amount "
+        "FROM expenses WHERE user_id = ?"
+    )
+    params = [user_id]
+    if from_date:
+        sql += " AND date >= ?"
+        params.append(from_date)
+    if to_date:
+        sql += " AND date <= ?"
+        params.append(to_date)
+    conn = get_db()
+    row = conn.execute(sql, params).fetchone()
+    conn.close()
+    return {"total_count": row["total_count"], "total_amount": row["total_amount"]}
+
+
+def get_expenses_by_date_range(user_id, from_date, to_date):
+    sql = (
+        "SELECT e.id, e.amount, e.description, e.date, c.name AS category "
+        "FROM expenses e JOIN categories c ON e.category_id = c.id "
+        "WHERE e.user_id = ?"
+    )
+    params = [user_id]
+    if from_date:
+        sql += " AND e.date >= ?"
+        params.append(from_date)
+    if to_date:
+        sql += " AND e.date <= ?"
+        params.append(to_date)
+    sql += " ORDER BY e.date DESC"
+    conn = get_db()
+    rows = conn.execute(sql, params).fetchall()
+    conn.close()
+    return rows

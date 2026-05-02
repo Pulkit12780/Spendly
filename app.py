@@ -1,6 +1,10 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from database.db import init_db, seed_db, create_user
+from database.db import (
+    init_db, seed_db, create_user,
+    get_user_by_id, get_expense_stats,
+    get_expense_stats_filtered, get_expenses_by_date_range,
+)
 
 app = Flask(__name__)
 app.secret_key = "spendly-dev-secret"  # use env var in production
@@ -74,7 +78,32 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    user = get_user_by_id(session["user_id"])
+    from_date = request.args.get("from_date", "").strip() or None
+    to_date   = request.args.get("to_date", "").strip() or None
+
+    if from_date and to_date and from_date > to_date:
+        flash("'From' date cannot be after 'To' date.")
+        from_date = to_date = None
+
+    if from_date or to_date:
+        stats = get_expense_stats_filtered(session["user_id"], from_date, to_date)
+    else:
+        stats = get_expense_stats(session["user_id"])
+
+    expenses = get_expenses_by_date_range(session["user_id"], from_date, to_date)
+
+    return render_template(
+        "profile.html",
+        user=user,
+        stats=stats,
+        expenses=expenses,
+        from_date=from_date or "",
+        to_date=to_date or "",
+    )
 
 
 @app.route("/expenses/add")
