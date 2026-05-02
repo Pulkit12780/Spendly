@@ -1,0 +1,232 @@
+.profile-section {
+    padding: 3rem 1.5rem;
+}
+
+.profile-container {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ---- User header ---- */
+.profile-header {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--paper-card);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profile-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin: 0 0 0.25rem;
+}
+
+.profile-email {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    margin: 0 0 0.25rem;
+}
+
+.profile-since {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    margin: 0;
+}
+
+/* ---- Stats grid ---- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--accent-light);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1;
+}
+
+/* ---- Filter form ---- */
+.filter-section {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.filter-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin: 0 0 1rem;
+}
+
+.filter-fields {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 140px;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1px;
+}
+
+.filter-clear {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.filter-clear:hover {
+    color: var(--danger);
+}
+
+/* ---- Expenses table ---- */
+.expenses-section {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.expenses-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin: 0 0 1rem;
+}
+
+.expense-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.expense-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.expense-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+    color: var(--ink-soft);
+    vertical-align: middle;
+}
+
+.expense-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.expense-table tbody tr:nth-child(even) {
+    background: var(--paper);
+}
+
+.amount-col {
+    text-align: right;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.category-tag {
+    background: var(--accent-2-light);
+    color: var(--accent-2);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+    margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .filter-fields {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+}
